@@ -253,6 +253,16 @@ git worktree remove "worktrees/$TASK"
 git branch -D "agent/$TASK"
 ```
 
+```bash
+# In case of container failure:
+sudo mkdir -p ~/.openhands
+sudo chown -R "$USER:$USER" ~/.openhands
+export SANDBOX_USER_ID="$(id -u)"
+export SANDBOX_GROUP_ID="$(id -g)"          # supported in practice; helps on some setups
+export SANDBOX_VOLUMES="$PWD:/workspace:rw" # explicit RW mount :contentReference[oaicite:2]{index=2}
+openhands --override-with-envs serve --mount-cwd
+```
+
 
 # local - vllm
 ```bash
