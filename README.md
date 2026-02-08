@@ -35,3 +35,46 @@ aider-install
 # warning: `/home/ubuntu/.local/bin` is not on your PATH. To use installed tools, run `export PATH="/home/ubuntu/.local/bin:$PATH"` or `uv tool update-shell`.
 
 ```
+
+# local - continue
+```
+C1) Install Continue in VS Code
+
+Open VS Code
+
+Extensions → search “Continue” → Install (publisher: Continue)
+
+(Continue is the VS Code extension; after install you’ll get a “Continue” panel/sidebar.)
+
+C2) Configure Continue to use your local vLLM (OpenAI provider)
+
+Continue uses an “OpenAI” provider configuration where you can override the base URL to any OpenAI-compatible server (like vLLM).
+
+Option A (recommended): Put config in Continue’s config file
+
+Open Continue settings → Open Config (Continue sidebar → ⚙️).
+Edit config.yaml to include something like this:
+
+name: Local vLLM (Qwen2.5 Coder)
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Qwen2.5 Coder 32B (local vLLM)
+    provider: openai
+    model: qwen2.5-coder-32b-awq
+    apiBase: http://localhost:8000/v1
+    apiKey: token-local-dev
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+
+
+Notes
+
+apiBase (or baseUrl in some Continue versions/docs) must point to your vLLM OpenAI endpoint.
+
+model must match your served model name from vLLM: --served-model-name qwen2.5-coder-32b-awq.
+```
