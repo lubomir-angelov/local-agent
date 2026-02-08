@@ -387,3 +387,35 @@ export SECURITY_CONFIRMATION_MODE=true
 
 openhands --override-with-envs serve --mount-cwd
 ```
+
+```bash
+# debug
+docker ps -a --filter "name=oh-agent-server" --format "table {{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}"
+name="$(docker ps -a --filter "name=oh-agent-server" --format "{{.Names}}" | head -n1)"
+docker logs --tail 200 "$name"
+docker inspect "$name" --format 'ExitCode={{.State.ExitCode}} Status={{.State.Status}} Error={{.State.Error}}'
+```
+```bash
+# the uv installs an openhands version 1.11
+# to use the latest and avoid the issue with wrong env vars (SANDBOX_CONTAINER_RUNTIME vs AGENT) run with docker instead:
+cd ~/tmp/gkrp_data_portal
+
+export OH_PERSISTENCE_DIR=/.openhands
+export RUNTIME=docker
+export LOG_ALL_EVENTS=true
+
+# Make sandbox write as your repo owner (ubuntu=1000 in your case)
+export SANDBOX_USER_ID=1000
+export SANDBOX_VOLUMES="$PWD:/workspace:rw"
+
+# Use the agent-server based sandbox image selection
+export AGENT_SERVER_IMAGE_REPOSITORY=ghcr.io/openhands/agent-server
+export AGENT_SERVER_IMAGE_TAG=1.10.0-python
+
+# Your local vLLM OpenAI-compatible endpoint
+export LLM_BASE_URL="http://host.docker.internal:8000/v1"
+export LLM_API_KEY="token-local-dev"
+export LLM_MODEL="openai/qwen2.5-coder-32b-awq"
+
+docker run -it --rm --pull=always   -e OH_PERSISTENCE_DIR   -e RUNTIME   -e LOG_ALL_EVENTS   -e SANDBOX_USER_ID   -e SANDBOX_VOLUMES   -e AGENT_SERVER_IMAGE_REPOSITORY   -e AGENT_SERVER_IMAGE_TAG   -e LLM_BASE_URL   -e LLM_API_KEY   -e LLM_MODEL   -v /var/run/docker.sock:/var/run/docker.sock   -v ~/.openhands:/.openhands   -p 3000:3000   --add-host host.docker.internal:host-gateway   --name openhands-app   docker.openhands.dev/openhands/openhands:1.3
+```
