@@ -3,6 +3,7 @@ services:
     image: vllm/vllm-openai:latest
     container_name: vllm-qwen25-coder-32b-awq
     restart: unless-stopped
+      
 
     # GPU access
     gpus: all
@@ -16,9 +17,12 @@ services:
     # Persist model downloads
     volumes:
       - "${HOME}/.cache/huggingface:/root/.cache/huggingface"
+      - "${HOME}/.cache/torch_extensions:/root/.cache/torch_extensions"
 
     environment:
       - HF_TOKEN=${HF_TOKEN}
+      - TORCH_EXTENSIONS_DIR=/root/.cache/torch_extensions
+      - TORCH_CUDA_ARCH_LIST=12.0
 
     command:
       - "--host"
