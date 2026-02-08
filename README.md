@@ -78,3 +78,50 @@ apiBase (or baseUrl in some Continue versions/docs) must point to your vLLM Open
 
 model must match your served model name from vLLM: --served-model-name qwen2.5-coder-32b-awq.
 ```
+
+# local - openhands
+
+## install
+```bash
+# install uv (follow uv's install guide if you don't already have it)
+# then:
+uv tool install openhands --python 3.12
+```
+
+
+## configure repo to work on
+```bash
+# example
+cd ~/repos/<your-target-repo>
+
+# in our case
+cd ~/repos/gkrp_data_portal
+
+# check the status, commit changes, etc. as needed
+git status
+
+# create a dedicated branch + worktree for the agent
+TASK=agent/$(date +%Y%m%d-%H%M)
+
+# create a separate folder and worktree
+git worktree add -b "$TASK" ~/tmp/gkrp_data_portal "$TASK" 2>/dev/null || git worktree add -b "$TASK" ~/tmp/gkrp_data_portal HEAD
+```
+
+## Add OpenHands repo rules inside the worktree 
+```bash
+cd ~/tmp/gkrp_data_portal/
+
+
+
+```
+
+```bash
+export LLM_MODEL="openai/qwen2.5-coder-32b-awq"
+export LLM_API_KEY="token-local-dev"
+export LLM_BASE_URL="http://host.docker.internal:8000/v1"
+
+# optional safety: require confirmation for actions
+export SECURITY_CONFIRMATION_MODE=true
+
+ openhands serve --mount-cwd --override-with-envs
+```
