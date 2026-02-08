@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MODE="sandbox"        # default: network disabled
+if [[ "${1:-}" == "--net" ]]; then
+  MODE="sandbox_net"  # network enabled
+  shift
+fi
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: ./tools/sbx [--net] <command...>"
+  exit 2
+fi
+
+# Ensure worktree mount exists
+mkdir -p worktrees/current
+
+# Run inside the sandbox container
+docker compose run --rm "$MODE" bash -lc '
+  set -euo pipefail
+  if [[ ! -x /opt/venv/bin/python ]]; then
+    python -m venv /opt/venv
+  fi
+  . /opt/venv/bin/activate
+  python -m pip install -U pip >/dev/null
+
+  # Project install: adjust to your monorepo conventions.
+  # Option A: editable install of root package (if applicable)
+  python -m pip install -e . >/dev/null 2>&1 || true
+
+  # Always ensure tools exist (you can also pin versions in pyproject/requirements)
+  python -m pip install -U ruff pytest >/dev/null
+
+  exec "$@"
+' -- "$@"

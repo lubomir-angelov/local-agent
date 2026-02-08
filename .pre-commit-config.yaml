@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: agent-log-append-only
+        name: Enforce append-only docs/AGENT_LOG.md
+        entry: tools/check_append_only.sh
+        language: system
+        pass_filenames: false

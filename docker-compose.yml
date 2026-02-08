@@ -1,0 +1,26 @@
+services:
+  sandbox_net:
+    build:
+      context: .
+      dockerfile: docker/sandbox/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ./worktrees/current:/workspace:rw
+      - sbx_venv:/opt/venv
+      - sbx_pip_cache:/home/agent/.cache/pip
+    environment:
+      - VIRTUAL_ENV=/opt/venv
+      - PATH=/opt/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 512
+
+  sandbox:
+    extends:
+      service: sandbox_net
+    network_mode: "none"
+    read_only: true
+    tmpfs:
+      - /tmp
