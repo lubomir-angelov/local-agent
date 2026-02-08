@@ -1,0 +1,31 @@
+# build artifacts
+**/dist/**
+**/build/**
+**/.eggs/**
+**/*.egg-info/**
+**/.mypy_cache/**
+**/.ruff_cache/**
+**/.pytest_cache/**
+**/.tox/**
+**/.coverage
+**/htmlcov/**
+
+# envs
+**/.venv/**
+**/venv/**
+**/.env
+**/.env.*
+
+# node
+**/node_modules/**
+**/.next/**
+**/.turbo/**
+**/.vite/**
+
+# data / large blobs
+**/.git/**
+**/.cache/**
+**/__pycache__/**
+**/*.parquet
+**/*.arrow
+**/*.bin
